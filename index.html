@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MANG — Software inteligente para quem tem problema real</title>
+<meta name="description" content="MANG — Software house AI-native. Diagnóstico gratuito de 90 minutos para medir a fluência em IA da sua empresa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+/* ── Acessibilidade: skip link (ABNT NBR 17060) ── */
+.skip-link{position:absolute;top:-100%;left:1rem;z-index:9999;background:var(--dark,#1a1a1a);color:#fff;padding:.75rem 1.5rem;border-radius:0 0 8px 8px;font-weight:600;font-size:.95rem;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:0}
+
+/* ── Foco visível (WCAG 2.4.7 / ABNT) ── */
+:focus-visible{outline:3px solid #c8ff00;outline-offset:3px;border-radius:4px}
+a:focus-visible,button:focus-visible{outline:3px solid #c8ff00;outline-offset:3px}
+
+/* ── Reduzir movimento (WCAG 2.3.3) ── */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .fade-up{opacity:1!important;transform:none!important}
+}
+/* ── Screen-reader only (WCAG) ── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:root{
+  --bg:#faf8f4;--bg-alt:#f0ece4;--dark:#1a1a1a;--darker:#111;
+  --text:#1d1d1f;--text-2:#6e6e73;--text-3:#999;
+  --accent:#c8ff00;--accent-dim:rgba(200,255,0,0.12);
+  --border:rgba(0,0,0,0.08);--radius:16px;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.container{max-width:1120px;margin:0 auto;padding:0 2rem}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,248,244,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1120px;margin:0 auto;padding:0 2rem}
+.nav-brand{display:flex;align-items:center;gap:.6rem}
+.nav-brand img{height:32px;width:auto}
+.nav-brand-name{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
+.nav-brand-sep{width:1px;height:20px;background:#d2d2d7;margin:0 .25rem}
+.nav-brand-tag{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+.nav-links{display:flex;align-items:center;gap:2rem;font-size:.9rem;font-weight:500;color:#555}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{font-size:.85rem;font-weight:600;padding:.6rem 1.5rem;background:var(--text);color:#fff;border-radius:980px;transition:background .2s;cursor:pointer;border:none;font-family:var(--font)}
+.nav-cta:hover{background:#333}
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:.5rem}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;transition:.3s}
+
+/* ── Lang Switcher ── */
+.lang-switch{display:flex;align-items:center;gap:.35rem;margin-left:.5rem}
+.lang-btn{background:none;border:2px solid transparent;border-radius:4px;cursor:pointer;padding:2px;line-height:0;opacity:.5;transition:all .2s}
+.lang-btn.active{opacity:1;border-color:var(--accent)}
+.lang-btn:hover{opacity:.85}
+.lang-btn svg{width:24px;height:16px;border-radius:2px;display:block}
+
+/* ── Hero ── */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;position:relative}
+.hero-text{background:var(--darker);display:flex;align-items:center;padding:6rem 4rem 4rem}
+.hero-text-inner{max-width:540px;margin-left:auto}
+.hero-eyebrow{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem}
+.hero h1{font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:800;line-height:1.08;letter-spacing:-.03em;color:#fff;margin-bottom:1.5rem}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:1.05rem;font-weight:400;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:2.5rem;max-width:440px}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+.btn-primary{display:inline-block;padding:1rem 2.25rem;background:var(--accent);color:var(--dark);border-radius:980px;font-size:1rem;font-weight:600;transition:all .25s;cursor:pointer;border:none;font-family:var(--font)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(200,255,0,.3)}
+.btn-ghost{display:inline-block;padding:1rem 2.25rem;color:rgba(255,255,255,.7);font-size:1rem;font-weight:500;transition:color .2s}
+.btn-ghost:hover{color:#fff}
+.hero-image{background:linear-gradient(135deg,#2a2a2a 0%,#1a2a10 100%);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+/* Se tiver hero.jpg, descomente: .hero-image{background:url('hero.jpg') center/cover no-repeat} */
+.hero-image .tree-deco{width:60%;max-width:320px;opacity:.08;color:#fff}
+
+/* ── Section generics ── */
+.section{padding:6rem 0}
+.section--dark{background:var(--dark);color:#fff}
+.section--dark .text-2{color:rgba(255,255,255,.6)}
+.section--alt{background:var(--bg-alt)}
+.section-eyebrow{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.section-eyebrow::before{content:'';width:24px;height:2px;background:var(--accent)}
+.section--dark .section-eyebrow{color:var(--accent)}
+.section-title{font-size:clamp(2rem,4vw,3.2rem);font-weight:700;line-height:1.1;letter-spacing:-.03em;max-width:700px;margin-bottom:1.25rem}
+.section-sub{font-size:clamp(1rem,1.8vw,1.15rem);font-weight:400;color:var(--text-2);line-height:1.55;max-width:600px}
+.section--dark .section-sub{color:rgba(255,255,255,.5)}
+
+/* ── Sobre ── */
+.sobre-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.sobre-manifesto{font-size:1.05rem;color:var(--text-2);line-height:1.7;margin-bottom:2rem}
+.sobre-manifesto strong{color:var(--text);font-weight:600}
+.pilares{display:flex;flex-direction:column;gap:1.5rem}
+.pilar{display:flex;gap:1rem;align-items:start}
+.pilar-icon{width:44px;height:44px;border-radius:12px;background:var(--dark);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pilar-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pilar-name{font-size:1rem;font-weight:600;margin-bottom:.25rem}
+.pilar-desc{font-size:.9rem;color:var(--text-2);line-height:1.5}
+
+/* ── Fases ── */
+.fases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.fase-card{background:#fff;border-radius:var(--radius);padding:2rem 1.75rem;border:1px solid var(--border);transition:transform .3s,box-shadow .3s}
+.fase-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.06)}
+.fase-num{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:.75rem}
+.fase-name{font-size:1.2rem;font-weight:700;margin-bottom:.75rem}
+.fase-desc{font-size:.9rem;color:var(--text-2);line-height:1.55;margin-bottom:1.25rem}
+.fase-entregaveis{list-style:none;margin-bottom:1.5rem}
+.fase-entregaveis li{font-size:.85rem;color:var(--text-2);padding:.4rem 0;padding-left:1.25rem;position:relative;line-height:1.45}
+.fase-entregaveis li::before{content:'';position:absolute;left:0;top:.7rem;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.fase-footer{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--border)}
+.fase-price{font-size:.9rem;font-weight:600}
+.fase-price.free{color:#34c759}
+.fase-link{font-size:.9rem;font-weight:600;color:var(--text);transition:color .2s}
+.fase-link:hover{color:var(--accent)}
+
+/* ── Diferenciais ── */
+.dif-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:2.5rem}
+.dif-card{background:#fff;border-radius:var(--radius);padding:2rem 1.5rem;border:1px solid var(--border);transition:transform .3s,box-shadow .3s}
+.dif-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.dif-num{font-size:clamp(2.5rem,5vw,3.5rem);font-weight:800;line-height:1;margin-bottom:.75rem;letter-spacing:-.03em}
+.dif-num span{font-size:.5em;font-weight:600}
+.dif-title{font-size:1rem;font-weight:600;margin-bottom:.5rem}
+.dif-desc{font-size:.88rem;color:var(--text-2);line-height:1.5}
+
+/* ── Problem (from diagnostic) ── */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2rem}
+.problem-card{background:var(--bg);border-radius:var(--radius);padding:1.75rem 1.5rem;border:1px solid var(--border);transition:transform .3s,box-shadow .3s}
+.problem-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.problem-card .number{font-size:2.5rem;font-weight:700;color:#e0e0e0;line-height:1;margin-bottom:.6rem}
+.problem-card h3{font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
+.problem-card p{font-size:.93rem;color:var(--text-2);line-height:1.5}
+
+/* ── Fluency ── */
+.fluency-content{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:2rem}
+.fluency-text h3{font-size:1.4rem;font-weight:600;margin-bottom:.75rem}
+.fluency-text p{font-size:1rem;color:var(--text-2);line-height:1.55;margin-bottom:.9rem}
+.highlight{display:inline-block;padding:.35rem .85rem;background:var(--accent-dim);border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text)}
+.fluency-visual{background:var(--dark);border-radius:20px;padding:2rem;color:#fff}
+.fluency-scale{display:flex;flex-direction:column;gap:.5rem}
+.fluency-level{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-radius:10px;background:rgba(255,255,255,.06);transition:background .3s}
+.fluency-level:hover{background:rgba(255,255,255,.12)}
+.fluency-letter{font-size:1.6rem;font-weight:700;min-width:2rem;text-align:center}
+.fluency-letter.a{color:#34c759}.fluency-letter.b{color:#5ac8fa}.fluency-letter.c{color:#ffd60a}.fluency-letter.d{color:#ff9f0a}.fluency-letter.e{color:#ff453a}
+.fl-desc{font-size:.85rem;color:rgba(255,255,255,.7)}
+.fl-desc strong{color:#fff;font-weight:600}
+.stats-row{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border)}
+.stat-item{text-align:center;flex:1}
+.stat-item .number{font-size:clamp(2rem,4vw,2.8rem);font-weight:700;line-height:1;letter-spacing:-.03em}
+.stat-item .label{font-size:.82rem;color:var(--text-2);margin-top:.35rem}
+
+/* ── Pillars ── */
+.pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.75rem}
+.pillar-card{background:#fff;border-radius:var(--radius);padding:1.5rem 1.25rem;transition:transform .3s,box-shadow .3s;border:1px solid var(--border)}
+.pillar-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.pillar-icon-box{width:40px;height:40px;border-radius:10px;background:var(--dark);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.pillar-icon-box svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.pillar-card h3{font-size:1.05rem;font-weight:600;margin-bottom:.4rem}
+.pillar-card p{font-size:.88rem;color:var(--text-2);line-height:1.45}
+
+/* ── Frameworks ── */
+.frameworks-banner{background:var(--dark);border-radius:20px;padding:2.5rem;color:#fff;text-align:center;margin-top:2rem}
+.frameworks-banner h3{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:600;margin-bottom:.75rem}
+.frameworks-banner p{font-size:1.05rem;color:rgba(255,255,255,.6);max-width:560px;margin:0 auto 2rem}
+.frameworks-logos{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem 1.5rem}
+.framework-tag{font-size:.85rem;font-weight:500;color:rgba(255,255,255,.45);padding:.55rem 1.3rem;border:1px solid rgba(255,255,255,.12);border-radius:980px;transition:all .3s}
+.framework-tag:hover{color:rgba(255,255,255,.9);border-color:rgba(255,255,255,.3)}
+
+/* ── Time ── */
+.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.time-card{background:rgba(255,255,255,.05);border:1px solid rgba(200,255,0,.15);border-radius:var(--radius);padding:2rem 1.5rem;transition:border-color .3s}
+.time-card:hover{border-color:rgba(200,255,0,.4)}
+.time-avatar{width:64px;height:64px;border-radius:50%;background:rgba(200,255,0,.15);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem}
+.time-name{font-size:1.1rem;font-weight:600;color:#fff}
+.time-role{font-size:.85rem;font-weight:600;color:var(--accent);margin-bottom:.75rem}
+.time-bio{font-size:.9rem;color:rgba(255,255,255,.6);line-height:1.55;margin-bottom:1rem}
+.time-quote{font-size:.88rem;font-style:italic;color:rgba(255,255,255,.4);padding:.75rem;background:rgba(255,255,255,.04);border-radius:10px;border-left:3px solid var(--accent);margin-bottom:1rem}
+.time-links{display:flex;gap:1rem}
+.time-link{font-size:.85rem;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:.35rem;transition:color .2s}
+.time-link:hover{color:var(--accent)}
+.time-link svg{width:14px;height:14px;fill:currentColor}
+
+/* ── ICP / Para quem é ── */
+.icp-grid{display:flex;flex-direction:column;gap:1rem;margin-top:2rem}
+.icp-card{display:flex;align-items:center;gap:1.5rem;background:#fff;border-radius:var(--radius);padding:1.5rem 2rem;border:1px solid var(--border);transition:border-color .3s}
+.icp-card:hover{border-color:rgba(200,255,0,.4)}
+.icp-pct{font-size:1.1rem;font-weight:700;background:var(--accent);color:var(--dark);padding:.5rem 1rem;border-radius:980px;white-space:nowrap;flex-shrink:0}
+.icp-name{font-size:1.05rem;font-weight:600;margin-bottom:.3rem}
+.icp-desc{font-size:.9rem;color:var(--text-2);line-height:1.5}
+.setores{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem}
+.setor-tag{font-size:.82rem;font-weight:500;padding:.5rem 1rem;background:var(--accent-dim);border-radius:980px;color:var(--text)}
+
+/* ── FAQ ── */
+.faq-list{margin-top:2rem}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{width:100%;background:none;border:none;padding:1.25rem 0;display:flex;justify-content:space-between;align-items:center;font-family:var(--font);font-size:1rem;font-weight:500;color:var(--text);cursor:pointer;text-align:left;gap:1rem}
+.faq-q:hover{color:var(--accent)}
+.faq-icon{font-size:1.5rem;font-weight:300;color:var(--text-3);transition:transform .3s;flex-shrink:0}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:1.25rem}
+.faq-a-inner{font-size:.93rem;color:var(--text-2);line-height:1.6}
+
+/* ── CTA ── */
+.cta-section{text-align:center;padding:6rem 2rem}
+.cta-section .section-title{margin:0 auto .75rem}
+.cta-sub{font-size:1.1rem;color:var(--text-2);margin-bottom:2rem}
+.btn-cta-big{display:inline-block;padding:1.2rem 3rem;background:var(--accent);color:var(--dark);border-radius:980px;font-size:1.1rem;font-weight:700;transition:all .25s;cursor:pointer;border:none;font-family:var(--font)}
+.btn-cta-big:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(200,255,0,.3)}
+
+/* ── Footer ── */
+footer{background:var(--dark);color:rgba(255,255,255,.6);padding:4rem 0 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;max-width:1120px;margin:0 auto;padding:0 2rem}
+.footer-logo{font-size:1.3rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem}
+.footer-logo img{height:28px;filter:invert(1)}
+.footer-tagline{font-size:.9rem;line-height:1.6;margin-bottom:1.25rem}
+.footer-social{display:flex;gap:1rem}
+.footer-soc{display:flex;align-items:center;gap:.4rem;font-size:.85rem;color:rgba(255,255,255,.5);transition:color .2s}
+.footer-soc:hover{color:var(--accent)}
+.footer-soc svg{width:18px;height:18px;fill:currentColor}
+.footer-col-title{font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem}
+.footer-link{display:block;font-size:.9rem;margin-bottom:.6rem;transition:color .2s}
+.footer-link:hover{color:var(--accent)}
+.footer-bottom{max-width:1120px;margin:3rem auto 0;padding:1.5rem 2rem 0;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.3)}
+
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal-card{background:#fff;border-radius:20px;padding:2.5rem;max-width:440px;width:90%;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.15);animation:modalIn .3s ease-out}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:1rem;right:1.25rem;background:none;border:none;font-size:1.5rem;color:#999;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--text)}
+.modal-card h3{font-size:1.3rem;font-weight:700;margin-bottom:.35rem}
+.modal-card .modal-sub{font-size:.9rem;color:var(--text-2);margin-bottom:1.5rem}
+.modal-field{margin-bottom:1rem}
+.modal-field label{display:block;font-size:.85rem;font-weight:500;margin-bottom:.4rem;color:var(--text)}
+.modal-field input,.modal-field select,.modal-field textarea{width:100%;padding:.75rem 1rem;border:1px solid #d2d2d7;border-radius:10px;font-size:.95rem;font-family:var(--font);outline:none;transition:border-color .2s;background:#fff;-webkit-appearance:none;appearance:none}
+.modal-field input:focus,.modal-field select:focus,.modal-field textarea:focus{border-color:var(--text)}
+.modal-field textarea{resize:vertical;min-height:80px}
+.modal-submit{width:100%;padding:1rem;background:var(--accent);color:var(--dark);border:none;border-radius:10px;font-size:1rem;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .2s;margin-top:.5rem}
+.modal-submit:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(200,255,0,.3)}
+
+/* ── WhatsApp Float ── */
+.whatsapp-float{position:fixed;bottom:2rem;right:2rem;z-index:99;width:56px;height:56px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .3s}
+.whatsapp-float:hover{transform:scale(1.1)}
+.whatsapp-float svg{width:28px;height:28px;fill:#fff}
+
+/* ── Animations ── */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .7s ease-out,transform .7s ease-out}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ── Responsive ── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr}
+  .hero-image{display:none}
+  .hero-text{padding:7rem 2rem 4rem;justify-content:center}
+  .hero-text-inner{margin-left:0;max-width:100%}
+  .sobre-grid{grid-template-columns:1fr}
+  .fases-grid{grid-template-columns:1fr}
+  .dif-grid{grid-template-columns:repeat(2,1fr)}
+  .problem-grid{grid-template-columns:1fr}
+  .fluency-content{grid-template-columns:1fr;gap:2rem}
+  .pillars-grid{grid-template-columns:repeat(2,1fr)}
+  .time-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:2rem}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-hamburger{display:block}
+  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:var(--bg);padding:1rem 2rem 2rem;border-bottom:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.06)}
+  .dif-grid{grid-template-columns:1fr}
+  .pillars-grid{grid-template-columns:1fr}
+  .hero-text{padding:6rem 1.5rem 3rem}
+  .hero h1{font-size:2rem}
+  .stats-row{flex-wrap:wrap;gap:1.5rem}
+  .stat-item{flex:0 0 45%}
+  .footer-bottom{flex-direction:column;gap:.5rem;text-align:center}
+  .icp-card{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Skip link (ABNT NBR 17060 / WCAG 2.4.1) ── -->
+<a class="skip-link" href="#conteudo-principal" data-i18n="skip_link">Pular para o conteúdo principal</a>
+
+<!-- ── Região live para anúncio de idioma (WCAG 4.1.3) ── -->
+<div id="lang-announce" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav role="navigation" aria-label="Navegação principal" id="main-nav">
+  <div class="nav-inner">
+    <a href="#inicio" class="nav-brand">
+      <img src="tree.svg" alt="MANG">
+      <span class="nav-brand-name">MANG</span>
+      <span class="nav-brand-sep"></span>
+      <span class="nav-brand-tag">AI Native · Problem First</span>
+    </a>
+    <button type="button" class="nav-hamburger" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="#fases" data-i18n="nav_fases">Como funciona</a>
+      <a href="#sobre" data-i18n="nav_sobre">Quem somos</a>
+      <a href="#fluencia" data-i18n="nav_fluencia">Fluência em IA</a>
+      <button class="nav-cta" onclick="openModal()" data-i18n="nav_cta">Diagnóstico gratuito →</button>
+      <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLang('pt')" title="Português" aria-label="Português">
+          <svg viewBox="0 0 640 480"><rect width="640" height="480" fill="#009c3b"/><polygon points="320,39 590,240 320,441 50,240" fill="#ffdf00"/><circle cx="320" cy="240" r="95" fill="#002776"/></svg>
+        </button>
+        <button class="lang-btn" onclick="setLang('en')" title="English" aria-label="English">
+          <svg viewBox="0 0 640 480"><rect width="640" height="480" fill="#bd3d44"/><rect y="37" width="640" height="37" fill="#fff"/><rect y="111" width="640" height="37" fill="#fff"/><rect y="185" width="640" height="37" fill="#fff"/><rect y="259" width="640" height="37" fill="#fff"/><rect y="333" width="640" height="37" fill="#fff"/><rect y="407" width="640" height="37" fill="#fff"/><rect width="260" height="260" fill="#192f5d"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main id="conteudo-principal">
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="inicio" aria-labelledby="hero-heading">
+  <div class="hero-text">
+    <div class="hero-text-inner fade-up">
+      <div class="hero-eyebrow">Software house · Problem First · AI Native</div>
+      <h1 id="hero-heading" data-i18n="hero_title">Software inteligente para quem tem <em>problema real.</em></h1>
+      <p class="hero-sub" data-i18n="hero_sub">Em 90 minutos, medimos a fluência em IA da sua empresa. De graça. Sem compromisso. Se houver caminho, capacitamos seu time ou construímos o software.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="openModal()" data-i18n="hero_cta">Agendar diagnóstico gratuito →</button>
+        <a href="#fases" class="btn-ghost" data-i18n="hero_link">Como funciona</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <!-- Substitua o background deste div pela imagem hero.jpg -->
+    <img src="tree.svg" class="tree-deco" alt="" aria-hidden="true">
+  </div>
+</section>
+
+<!-- ═══ SOBRE ═══ -->
+<section class="section" id="sobre" aria-labelledby="sobre-heading">
+  <div class="container">
+    <div class="sobre-grid">
+      <div class="fade-up">
+        <div class="section-eyebrow" data-i18n="sobre_eyebrow">Quem somos</div>
+        <h2 id="sobre-heading" class="section-title" data-i18n="sobre_title">Diagnosticamos onde sua empresa está, capacitamos seu time e construímos o software que faz acontecer.</h2>
+      </div>
+      <div class="fade-up">
+        <p class="sobre-manifesto" data-i18n="sobre_manifesto">
+          A MANG é uma software house AI-native.
+          <strong>Entramos pelo problema real do seu negócio</strong> — nunca pela tecnologia.
+          Usamos IA como ferramenta nativa no desenvolvimento.
+          <strong>Somos ágeis e treinamos sua equipe para operar sozinha.</strong>
+        </p>
+        <div class="pilares">
+          <div class="pilar">
+            <div class="pilar-icon">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <div>
+              <h3 class="pilar-name">Problem First</h3>
+              <div class="pilar-desc" data-i18n="pilar1_desc">Diagnóstico antes de qualquer solução. Primeiro o problema, depois a tecnologia.</div>
+            </div>
+          </div>
+          <div class="pilar">
+            <div class="pilar-icon">
+              <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div>
+              <h3 class="pilar-name">AI Native</h3>
+              <div class="pilar-desc" data-i18n="pilar2_desc">IA no núcleo do desenvolvimento — não como enfeite. Tecnologia construindo tecnologia.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FASES ═══ -->
+<section class="section section--alt" id="fases" aria-labelledby="fases-heading">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-eyebrow" data-i18n="fases_eyebrow">Como funciona</div>
+      <h2 id="fases-heading" class="section-title" data-i18n="fases_title">Do diagnóstico ao software — em três fases.</h2>
+      <p class="section-sub" data-i18n="fases_sub">Tudo começa pelo diagnóstico gratuito. O que vem depois depende do que encontrarmos juntos.</p>
+    </div>
+    <div class="fases-grid">
+      <div class="fase-card fade-up">
+        <div class="fase-num" data-i18n="f1_num">Fase 01</div>
+        <h3 class="fase-name" data-i18n="f1_name">Fazemos seu Diagnóstico</h3>
+        <div class="fase-desc" data-i18n="f1_desc">90 minutos para medir o nível de fluência em IA da sua empresa. Sem jargão técnico, sem achismo, conduzido por quem entende de negócio.</div>
+        <ul class="fase-entregaveis">
+          <li data-i18n="f1_e1">Índice real de fluência em IA da sua empresa</li>
+          <li data-i18n="f1_e2">Retrato honesto de onde você está versus o mercado</li>
+          <li data-i18n="f1_e3">Plano de ação claro: capacitar o time, construir software — ou os dois</li>
+        </ul>
+        <div class="fase-footer">
+          <span class="fase-price free" data-i18n="f1_price">Gratuito</span>
+          <a href="javascript:void(0)" onclick="openModal()" class="fase-link" data-i18n="f1_link">Agendar →</a>
+        </div>
+      </div>
+      <div class="fase-card fade-up">
+        <div class="fase-num" data-i18n="f2_num">Fase 02</div>
+        <h3 class="fase-name" data-i18n="f2_name">Treinamos seu time</h3>
+        <div class="fase-desc" data-i18n="f2_desc">Formação prática para sua equipe identificar onde a IA ajuda de verdade. Termina com um mapa de projetos priorizados por viabilidade e impacto.</div>
+        <ul class="fase-entregaveis">
+          <li data-i18n="f2_e1">Meio dia ou dia inteiro, presencial ou remoto</li>
+          <li data-i18n="f2_e2">O que IA faz e não faz — com exemplos do seu setor</li>
+          <li data-i18n="f2_e3">Lista de projetos priorizados para implementar</li>
+          <li data-i18n="f2_e4">Autonomia: você decide se a MANG implementa ou não</li>
+        </ul>
+        <div class="fase-footer">
+          <span class="fase-price" data-i18n="f2_price">Sob consulta</span>
+          <a href="javascript:void(0)" onclick="openModal()" class="fase-link" data-i18n="f2_link">Saber mais →</a>
+        </div>
+      </div>
+      <div class="fase-card fade-up">
+        <div class="fase-num" data-i18n="f3_num">Fase 03</div>
+        <h3 class="fase-name" data-i18n="f3_name">Construímos seu software com IA</h3>
+        <div class="fase-desc" data-i18n="f3_desc">Implementamos o software. Automações, bots, dashboards, integrações. Projetos menores entregamos rápido. Projetos maiores trazemos reforço sênior.</div>
+        <ul class="fase-entregaveis">
+          <li data-i18n="f3_e1">Automações de processos operacionais</li>
+          <li data-i18n="f3_e2">Agentes de atendimento inteligente</li>
+          <li data-i18n="f3_e3">Dashboards e relatórios automáticos</li>
+          <li data-i18n="f3_e4">Integração com sistemas existentes</li>
+        </ul>
+        <div class="fase-footer">
+          <span class="fase-price" data-i18n="f3_price"></span>
+          <a href="javascript:void(0)" onclick="openModal()" class="fase-link" data-i18n="f3_link">Ver escopo →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROBLEMA (from diagnostic site) ═══ -->
+<section class="section section--alt" id="problema" aria-labelledby="prob-heading">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-eyebrow" data-i18n="prob_eyebrow">O problema</div>
+      <h2 id="prob-heading" class="section-title" data-i18n="prob_title">Os frameworks tradicionais não funcionam para IA.</h2>
+      <p class="section-sub" data-i18n="prob_sub">A maioria dos frameworks existentes herda do CMMI — um modelo dos anos 90 para software estável. IA não é estável. O estado da arte muda a cada poucos meses.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card fade-up">
+        <div class="number">01</div>
+        <h3 data-i18n="prob1_h">Falsa sensação de chegada</h3>
+        <p data-i18n="prob1_p">Uma empresa em "nível otimizado" sente que chegou. Justamente por isso, é a mais vulnerável a ser ultrapassada pela próxima onda.</p>
+      </div>
+      <div class="problem-card fade-up">
+        <div class="number">02</div>
+        <h3 data-i18n="prob2_h">Penaliza quem experimenta</h3>
+        <p data-i18n="prob2_p">Frameworks tradicionais recompensam padronização. Em IA, experimentar e descartar rápido é mais valioso. 42% das empresas abandonam projetos de IA — e isso não é fracasso.</p>
+      </div>
+      <div class="problem-card fade-up">
+        <div class="number">03</div>
+        <h3 data-i18n="prob3_h">Ignora o movimento</h3>
+        <p data-i18n="prob3_p">Frameworks tradicionais medem posição. O que importa em IA é velocidade de adaptação. Quem incorporou LLMs ontem pode estar mais fluente que quem tem ML há 5 anos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLUÊNCIA (from diagnostic site) ═══ -->
+<section class="section" id="fluencia" aria-labelledby="flu-heading">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-eyebrow" data-i18n="flu_eyebrow">A solução</div>
+      <h2 id="flu-heading" class="section-title" data-i18n="flu_title">Fluência — o novo paradigma.</h2>
+    </div>
+    <div class="fluency-content">
+      <div class="fluency-text fade-up">
+        <h3 data-i18n="flu_h3">Um idioma que sua empresa precisa falar.</h3>
+        <p data-i18n="flu_p1">Assim como um TOEFL mede fluência em inglês, nós medimos fluência em IA — de E a A. Uma escala viva, que reconhece que parar é retroceder.</p>
+        <p data-i18n="flu_p2"><span class="highlight">É contínua</span> — quem para de praticar, perde.</p>
+        <p data-i18n="flu_p3"><span class="highlight">É distribuída</span> — empresas podem ser A em dados e D em pessoas.</p>
+        <p data-i18n="flu_p4"><span class="highlight">Depende do ecossistema</span> — é mais fácil ser fluente num ambiente fluente.</p>
+      </div>
+      <div class="fluency-visual fade-up">
+        <div class="fluency-scale">
+          <div class="fluency-level">
+            <div class="fluency-letter a">A</div>
+            <div class="fl-desc" data-i18n="fl_a"><strong>Vanguarda</strong> — Fluência nativa; estado da arte</div>
+          </div>
+          <div class="fluency-level">
+            <div class="fluency-letter b">B</div>
+            <div class="fl-desc" data-i18n="fl_b"><strong>Avançado</strong> — Uso sofisticado e estruturado</div>
+          </div>
+          <div class="fluency-level">
+            <div class="fluency-letter c">C</div>
+            <div class="fl-desc" data-i18n="fl_c"><strong>Intermediário</strong> — Iniciativas consistentes</div>
+          </div>
+          <div class="fluency-level">
+            <div class="fluency-letter d">D</div>
+            <div class="fl-desc" data-i18n="fl_d"><strong>Inicial</strong> — Experimentos focados</div>
+          </div>
+          <div class="fluency-level">
+            <div class="fluency-letter e">E</div>
+            <div class="fl-desc" data-i18n="fl_e"><strong>Ausente</strong> — Nenhum uso significativo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats-row fade-up">
+      <div class="stat-item"><div class="number">6</div><div class="label" data-i18n="stat1">Pilares</div></div>
+      <div class="stat-item"><div class="number">5</div><div class="label" data-i18n="stat2">Níveis (A → E)</div></div>
+      <div class="stat-item"><div class="number">8</div><div class="label" data-i18n="stat3">Frameworks sintetizados</div></div>
+      <div class="stat-item"><div class="number">7</div><div class="label" data-i18n="stat4">Classes de resultado</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PILARES (from diagnostic site) ═══ -->
+<section class="section section--alt" id="pilares" aria-labelledby="pil-heading">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-eyebrow" data-i18n="pil_eyebrow">Os 6 pilares</div>
+      <h2 id="pil-heading" class="section-title" data-i18n="pil_title">Fluência é multidimensional.</h2>
+      <p class="section-sub" data-i18n="pil_sub">Medimos cada pilar separadamente — e mostramos onde estão as oportunidades.</p>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-card fade-up">
+        <div class="pillar-icon-box">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3 data-i18n="pil1_h">Estratégia & Liderança</h3>
+        <p data-i18n="pil1_p">Visão clara de por que IA importa — e liderança que age coerentemente, alocando recursos e priorizando projetos.</p>
+      </div>
+      <div class="pillar-card fade-up">
+        <div class="pillar-icon-box">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <h3 data-i18n="pil2_h">Dados & Infraestrutura</h3>
+        <p data-i18n="pil2_p">Dados acessíveis e de qualidade, em infraestrutura que permite treino, inferência e experimentação contínua.</p>
+      </div>
+      <div class="pillar-card fade-up">
+        <div class="pillar-icon-box">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 data-i18n="pil3_h">Pessoas & Cultura</h3>
+        <p data-i18n="pil3_p">Talento, cultura de experimentação e letramento em IA distribuído na organização — não concentrado em uma pessoa.</p>
+      </div>
+      <div class="pillar-card fade-up">
+        <div class="pillar-icon-box">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3 data-i18n="pil4_h">Processos & Governança</h3>
+        <p data-i18n="pil4_p">Como projetos de IA são selecionados e avaliados. Governança que não engessa — mas não deixa o caos reinar.</p>
+      </div>
+      <div class="pillar-card fade-up">
+        <div class="pillar-icon-box">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3 data-i18n="pil5_h">Produtos & Cliente</h3>
+        <p data-i18n="pil5_p">IA que chega ao cliente final: produtos e experiências que resolvem problemas reais — não apenas otimizam internamente.</p>
+      </div>
+      <div class="pillar-card fade-up">
+        <div class="pillar-icon-box">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 data-i18n="pil6_h">Ética & Risco</h3>
+        <p data-i18n="pil6_p">Como a empresa identifica e mitiga riscos de IA — viés, privacidade, transparência — sem paralisar a inovação.</p>
+      </div>
+    </div>
+
+    <!-- Frameworks banner -->
+    <div class="frameworks-banner fade-up">
+      <h3 data-i18n="fw_h">8 frameworks. Uma síntese.</h3>
+      <p data-i18n="fw_p">Cada pilar foi validado contra dimensões equivalentes em frameworks globais, garantindo compatibilidade e estimativas cruzadas.</p>
+      <div class="frameworks-logos">
+        <span class="framework-tag">MIT CISR</span>
+        <span class="framework-tag">Gartner</span>
+        <span class="framework-tag">Deloitte</span>
+        <span class="framework-tag">Cisco</span>
+        <span class="framework-tag">Forrester / IBM</span>
+        <span class="framework-tag">Microsoft</span>
+        <span class="framework-tag">Salesforce</span>
+        <span class="framework-tag">NIST</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ═══ CTA FINAL ═══ -->
+<section class="cta-section" id="contato" aria-labelledby="cta-heading">
+  <div class="container">
+    <div class="fade-up">
+      <h2 id="cta-heading" class="section-title" style="text-align:center" data-i18n="cta_title">Pronto para descobrir onde sua empresa trava?</h2>
+      <p class="cta-sub" data-i18n="cta_sub">90 minutos. Gratuito. Sem compromisso.</p>
+      <button class="btn-cta-big" onclick="openModal()" data-i18n="cta_btn">Agendar diagnóstico gratuito →</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer role="contentinfo">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">
+        <img src="tree.svg" alt="MANG">
+        MANG
+      </div>
+      <p class="footer-tagline" data-i18n="ft_tagline">Software inteligente. Problem First.<br>AI Native.</p>
+      <div class="footer-social">
+        <a href="#" class="footer-soc" aria-label="LinkedIn da MANG">
+          <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href="#" class="footer-soc" aria-label="Instagram da MANG">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Instagram
+        </a>
+        <a href="https://wa.me/5581995765272" target="_blank" class="footer-soc" aria-label="WhatsApp da MANG">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title" data-i18n="ft_serv">Serviços</div>
+      <a href="#fases" class="footer-link" data-i18n="ft_diag">Diagnóstico gratuito</a>
+      <a href="#fases" class="footer-link" data-i18n="ft_trein">Treinamos seu time</a>
+      <a href="#fases" class="footer-link" data-i18n="ft_proj">Construímos seu software com IA</a>
+    </div>
+    <div>
+      <div class="footer-col-title">MANG</div>
+      <a href="#sobre" class="footer-link" data-i18n="ft_sobre">Quem somos</a>
+      <a href="#fluencia" class="footer-link" data-i18n="ft_flu">Fluência em IA</a>
+      <a href="javascript:void(0)" onclick="openModal()" class="footer-link" data-i18n="ft_contact">Contato</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 MANG &middot; Software house AI-Native</span>
+    <span>mang.ia.br</span>
+  </div>
+</footer>
+
+<!-- ═══ MODAL: Diagnóstico simples → WhatsApp ═══ -->
+<div class="modal-overlay" id="modalDiag" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()" data-i18n-aria="modal_close_aria" aria-label="Fechar">&times;</button>
+    <h3 id="modal-title" data-i18n="modal_title">Agendar diagnóstico gratuito</h3>
+    <p class="modal-sub" data-i18n="modal_sub">Preencha seus dados e entraremos em contato pelo WhatsApp.</p>
+    <form id="formDiag" onsubmit="submitToWhatsApp(event)">
+      <div class="modal-field">
+        <label for="d-nome" data-i18n="ml_nome">Nome *</label>
+        <input type="text" id="d-nome" required autocomplete="name" data-i18n-ph="ml_nome_ph" placeholder="Seu nome completo">
+      </div>
+      <div class="modal-field">
+        <label for="d-empresa" data-i18n="ml_empresa">Empresa *</label>
+        <input type="text" id="d-empresa" required autocomplete="organization" data-i18n-ph="ml_empresa_ph" placeholder="Nome da empresa">
+      </div>
+      <div class="modal-field">
+        <label for="d-telefone" data-i18n="ml_tel">Telefone / WhatsApp *</label>
+        <input type="tel" id="d-telefone" required autocomplete="tel" placeholder="(00) 00000-0000">
+      </div>
+      <div class="modal-field">
+        <label for="d-email">Email</label>
+        <input type="email" id="d-email" autocomplete="email" placeholder="seu@email.com">
+      </div>
+      <div class="modal-field">
+        <label for="d-desafio" data-i18n="ml_desafio">Qual o maior desafio da sua empresa hoje?</label>
+        <textarea id="d-desafio" data-i18n-ph="ml_desafio_ph" placeholder="Ex: Nosso agendamento é manual e gera 30% de faltas..."></textarea>
+      </div>
+      <button type="submit" class="modal-submit" data-i18n="ml_submit">Enviar para WhatsApp →</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ WHATSAPP FLOAT ═══ -->
+<a href="https://wa.me/5581995765272" target="_blank" class="whatsapp-float" aria-label="Fale conosco no WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// ═══ i18n ═══
+var currentLang='pt';
+var i18n={
+pt:{
+  skip_link:'Pular para o conteúdo principal',
+  nav_fases:'Como funciona',nav_sobre:'Quem somos',nav_fluencia:'Fluência em IA',nav_cta:'Diagnóstico gratuito →',
+  hero_title:'Software inteligente para quem tem <em>problema real.</em>',
+  hero_sub:'Em 90 minutos, medimos a fluência em IA da sua empresa. De graça. Sem compromisso. Se houver caminho, capacitamos seu time ou construímos o software.',
+  hero_cta:'Agendar diagnóstico gratuito →',hero_link:'Como funciona',
+  sobre_eyebrow:'Quem somos',sobre_title:'Diagnosticamos onde sua empresa está, capacitamos seu time e construímos o software que faz acontecer.',
+  sobre_manifesto:'A MANG é uma software house AI-native. <strong>Entramos pelo problema real do seu negócio</strong> — nunca pela tecnologia. Usamos IA como ferramenta nativa no desenvolvimento. <strong>Somos ágeis e treinamos sua equipe para operar sozinha.</strong>',
+  pilar1_desc:'Diagnóstico antes de qualquer solução. Primeiro o problema, depois a tecnologia.',
+  pilar2_desc:'IA no núcleo do desenvolvimento — não como enfeite. Tecnologia construindo tecnologia.',
+  fases_eyebrow:'Como funciona',fases_title:'Do diagnóstico ao software — em três fases.',fases_sub:'Tudo começa pelo diagnóstico gratuito. O que vem depois depende do que encontrarmos juntos.',
+  f1_num:'Fase 01',f1_name:'Fazemos seu Diagnóstico',f1_desc:'90 minutos para medir o nível de fluência em IA da sua empresa. Sem jargão técnico, sem achismo, conduzido por quem entende de negócio.',
+  f1_e1:'Índice real de fluência em IA da sua empresa',f1_e2:'Retrato honesto de onde você está versus o mercado',f1_e3:'Plano de ação claro: capacitar o time, construir software — ou os dois',
+  f1_price:'Gratuito',f1_link:'Agendar →',
+  f2_num:'Fase 02',f2_name:'Treinamos seu time',f2_desc:'Formação prática para sua equipe identificar onde a IA ajuda de verdade. Termina com um mapa de projetos priorizados por viabilidade e impacto.',
+  f2_e1:'Meio dia ou dia inteiro, presencial ou remoto',f2_e2:'O que IA faz e não faz — com exemplos do seu setor',f2_e3:'Lista de projetos priorizados para implementar',f2_e4:'Autonomia: você decide se a MANG implementa ou não',
+  f2_price:'Sob consulta',f2_link:'Saber mais →',
+  f3_num:'Fase 03',f3_name:'Construímos seu software com IA',f3_desc:'Implementamos o software. Automações, bots, dashboards, integrações. Projetos menores entregamos rápido. Projetos maiores trazemos reforço sênior.',
+  f3_e1:'Automações de processos operacionais',f3_e2:'Agentes de atendimento inteligente',f3_e3:'Dashboards e relatórios automáticos',f3_e4:'Integração com sistemas existentes',
+  f3_price:'',f3_link:'Ver escopo →',
+  prob_eyebrow:'O problema',prob_title:'Os frameworks tradicionais não funcionam para IA.',prob_sub:'A maioria dos frameworks existentes herda do CMMI — um modelo dos anos 90 para software estável. IA não é estável. O estado da arte muda a cada poucos meses.',
+  prob1_h:'Falsa sensação de chegada',prob1_p:'Uma empresa em "nível otimizado" sente que chegou. Justamente por isso, é a mais vulnerável a ser ultrapassada pela próxima onda.',
+  prob2_h:'Penaliza quem experimenta',prob2_p:'Frameworks tradicionais recompensam padronização. Em IA, experimentar e descartar rápido é mais valioso. 42% das empresas abandonam projetos de IA — e isso não é fracasso.',
+  prob3_h:'Ignora o movimento',prob3_p:'Frameworks tradicionais medem posição. O que importa em IA é velocidade de adaptação. Quem incorporou LLMs ontem pode estar mais fluente que quem tem ML há 5 anos.',
+  flu_eyebrow:'A solução',flu_title:'Fluência — o novo paradigma.',
+  flu_h3:'Um idioma que sua empresa precisa falar.',
+  flu_p1:'Assim como um TOEFL mede fluência em inglês, nós medimos fluência em IA — de E a A. Uma escala viva, que reconhece que parar é retroceder.',
+  flu_p2:'<span class="highlight">É contínua</span> — quem para de praticar, perde.',
+  flu_p3:'<span class="highlight">É distribuída</span> — empresas podem ser A em dados e D em pessoas.',
+  flu_p4:'<span class="highlight">Depende do ecossistema</span> — é mais fácil ser fluente num ambiente fluente.',
+  fl_a:'<strong>Vanguarda</strong> — Fluência nativa; estado da arte',
+  fl_b:'<strong>Avançado</strong> — Uso sofisticado e estruturado',
+  fl_c:'<strong>Intermediário</strong> — Iniciativas consistentes',
+  fl_d:'<strong>Inicial</strong> — Experimentos focados',
+  fl_e:'<strong>Ausente</strong> — Nenhum uso significativo',
+  stat1:'Pilares',stat2:'Níveis (A → E)',stat3:'Frameworks sintetizados',stat4:'Classes de resultado',
+  pil_eyebrow:'Os 6 pilares',pil_title:'Fluência é multidimensional.',pil_sub:'Medimos cada pilar separadamente — e mostramos onde estão as oportunidades.',
+  pil1_h:'Estratégia & Liderança',pil1_p:'Visão clara de por que IA importa — e liderança que age coerentemente, alocando recursos e priorizando projetos.',
+  pil2_h:'Dados & Infraestrutura',pil2_p:'Dados acessíveis e de qualidade, em infraestrutura que permite treino, inferência e experimentação contínua.',
+  pil3_h:'Pessoas & Cultura',pil3_p:'Talento, cultura de experimentação e letramento em IA distribuído na organização — não concentrado em uma pessoa.',
+  pil4_h:'Processos & Governança',pil4_p:'Como projetos de IA são selecionados e avaliados. Governança que não engessa — mas não deixa o caos reinar.',
+  pil5_h:'Produtos & Cliente',pil5_p:'IA que chega ao cliente final: produtos e experiências que resolvem problemas reais — não apenas otimizam internamente.',
+  pil6_h:'Ética & Risco',pil6_p:'Como a empresa identifica e mitiga riscos de IA — viés, privacidade, transparência — sem paralisar a inovação.',
+  fw_h:'8 frameworks. Uma síntese.',fw_p:'Cada pilar foi validado contra dimensões equivalentes em frameworks globais, garantindo compatibilidade e estimativas cruzadas.',
+  cta_title:'Pronto para descobrir onde sua empresa trava?',cta_sub:'90 minutos. Gratuito. Sem compromisso.',cta_btn:'Agendar diagnóstico gratuito →',
+  ft_tagline:'Software inteligente. Problem First.<br>AI Native.',
+  ft_serv:'Serviços',ft_diag:'Diagnóstico gratuito',ft_trein:'Treinamos seu time',ft_proj:'Construímos seu software com IA',
+  ft_sobre:'Quem somos',ft_flu:'Fluência em IA',ft_contact:'Contato',
+  modal_title:'Agendar diagnóstico gratuito',modal_sub:'Preencha seus dados e entraremos em contato pelo WhatsApp.',
+  modal_close_aria:'Fechar modal',
+  ml_nome:'Nome *',ml_nome_ph:'Seu nome completo',ml_empresa:'Empresa *',ml_empresa_ph:'Nome da empresa',
+  ml_tel:'Telefone / WhatsApp *',ml_desafio:'Qual o maior desafio da sua empresa hoje?',ml_desafio_ph:'Ex: Nosso agendamento é manual e gera 30% de faltas...',
+  ml_submit:'Enviar para WhatsApp →',
+  wa_msg:'Olá! Quero agendar o diagnóstico gratuito da MANG.',
+  lang_announce:'Idioma: Português'
+},
+en:{
+  skip_link:'Skip to main content',
+  nav_fases:'How it works',nav_sobre:'About us',nav_fluencia:'AI Fluency',nav_cta:'Free assessment →',
+  hero_title:'Smart software for companies with <em>real problems.</em>',
+  hero_sub:'In 90 minutes, we measure your company\'s AI fluency. Free. No strings attached. If there\'s a path forward, we train your team or build the software.',
+  hero_cta:'Book free assessment →',hero_link:'How it works',
+  sobre_eyebrow:'About us',sobre_title:'We diagnose where your company stands, train your team, and build the software that makes it happen.',
+  sobre_manifesto:'MANG is an AI-native software house. <strong>We start with your real business problem</strong> — never with the technology. We use AI as a native tool in development. <strong>We\'re agile and we train your team to operate independently.</strong>',
+  pilar1_desc:'Assessment before any solution. First the problem, then the technology.',
+  pilar2_desc:'AI at the core of development — not as decoration. Technology building technology.',
+  fases_eyebrow:'How it works',fases_title:'From assessment to software — in three phases.',fases_sub:'Everything starts with the free assessment. What comes next depends on what we find together.',
+  f1_num:'Phase 01',f1_name:'We Assess Your Business',f1_desc:'90 minutes to measure your company\'s AI fluency level. No technical jargon, no guesswork, led by someone who understands business.',
+  f1_e1:'Real AI fluency index for your company',f1_e2:'Honest picture of where you stand versus the market',f1_e3:'Clear action plan: train the team, build software — or both',
+  f1_price:'Free',f1_link:'Book now →',
+  f2_num:'Phase 02',f2_name:'We Train Your Team',f2_desc:'Hands-on training for your team to identify where AI truly helps. Ends with a project roadmap prioritized by feasibility and impact.',
+  f2_e1:'Half-day or full-day, in-person or remote',f2_e2:'What AI does and doesn\'t do — with examples from your industry',f2_e3:'Prioritized list of projects to implement',f2_e4:'Autonomy: you decide if MANG implements or not',
+  f2_price:'On request',f2_link:'Learn more →',
+  f3_num:'Phase 03',f3_name:'We Build Your AI Software',f3_desc:'We build the software. Automations, bots, dashboards, integrations. Smaller projects we deliver fast. Larger ones we bring in senior reinforcement.',
+  f3_e1:'Operational process automations',f3_e2:'Intelligent service agents',f3_e3:'Automated dashboards and reports',f3_e4:'Integration with existing systems',
+  f3_price:'',f3_link:'See scope →',
+  prob_eyebrow:'The problem',prob_title:'Traditional frameworks don\'t work for AI.',prob_sub:'Most existing frameworks inherit from CMMI — a 1990s model for stable software. AI is not stable. The state of the art changes every few months.',
+  prob1_h:'False sense of arrival',prob1_p:'A company at "optimized level" feels it has arrived. That\'s exactly why it\'s most vulnerable to being overtaken by the next wave.',
+  prob2_h:'Punishes experimentation',prob2_p:'Traditional frameworks reward standardization. In AI, experimenting and discarding quickly is more valuable. 42% of companies abandon AI projects — and that\'s not failure.',
+  prob3_h:'Ignores movement',prob3_p:'Traditional frameworks measure position. What matters in AI is speed of adaptation. Someone who adopted LLMs yesterday may be more fluent than someone with ML for 5 years.',
+  flu_eyebrow:'The solution',flu_title:'Fluency — the new paradigm.',
+  flu_h3:'A language your company needs to speak.',
+  flu_p1:'Just as TOEFL measures English fluency, we measure AI fluency — from E to A. A living scale that recognizes that stopping means falling behind.',
+  flu_p2:'<span class="highlight">It\'s continuous</span> — stop practicing, and you lose it.',
+  flu_p3:'<span class="highlight">It\'s distributed</span> — companies can be A in data and D in people.',
+  flu_p4:'<span class="highlight">It depends on the ecosystem</span> — it\'s easier to be fluent in a fluent environment.',
+  fl_a:'<strong>Vanguard</strong> — Native fluency; state of the art',
+  fl_b:'<strong>Advanced</strong> — Sophisticated, structured use',
+  fl_c:'<strong>Intermediate</strong> — Consistent initiatives',
+  fl_d:'<strong>Initial</strong> — Focused experiments',
+  fl_e:'<strong>Absent</strong> — No significant use',
+  stat1:'Pillars',stat2:'Levels (A → E)',stat3:'Synthesized frameworks',stat4:'Result classes',
+  pil_eyebrow:'The 6 pillars',pil_title:'Fluency is multidimensional.',pil_sub:'We measure each pillar separately — and show where the opportunities are.',
+  pil1_h:'Strategy & Leadership',pil1_p:'Clear vision of why AI matters — and leadership that acts coherently, allocating resources and prioritizing projects.',
+  pil2_h:'Data & Infrastructure',pil2_p:'Accessible, quality data in infrastructure that enables training, inference, and continuous experimentation.',
+  pil3_h:'People & Culture',pil3_p:'Talent, experimentation culture, and AI literacy distributed across the organization — not concentrated in one person.',
+  pil4_h:'Processes & Governance',pil4_p:'How AI projects are selected and evaluated. Governance that doesn\'t stifle — but doesn\'t let chaos reign.',
+  pil5_h:'Products & Customer',pil5_p:'AI that reaches the end customer: products and experiences that solve real problems — not just optimize internally.',
+  pil6_h:'Ethics & Risk',pil6_p:'How the company identifies and mitigates AI risks — bias, privacy, transparency — without paralyzing innovation.',
+  fw_h:'8 frameworks. One synthesis.',fw_p:'Each pillar was validated against equivalent dimensions in global frameworks, ensuring compatibility and cross-estimates.',
+  cta_title:'Ready to find out where your company is stuck?',cta_sub:'90 minutes. Free. No commitment.',cta_btn:'Book free assessment →',
+  ft_tagline:'Smart software. Problem First.<br>AI Native.',
+  ft_serv:'Services',ft_diag:'Free assessment',ft_trein:'We Train Your Team',ft_proj:'We Build Your AI Software',
+  ft_sobre:'About us',ft_flu:'AI Fluency',ft_contact:'Contact',
+  modal_title:'Book free assessment',modal_sub:'Fill in your details and we\'ll contact you via WhatsApp.',
+  modal_close_aria:'Close modal',
+  ml_nome:'Name *',ml_nome_ph:'Your full name',ml_empresa:'Company *',ml_empresa_ph:'Company name',
+  ml_tel:'Phone / WhatsApp *',ml_desafio:'What is your company\'s biggest challenge today?',ml_desafio_ph:'E.g.: Our scheduling is manual and causes 30% no-shows...',
+  ml_submit:'Send via WhatsApp →',
+  wa_msg:'Hi! I\'d like to book MANG\'s free assessment.',
+  lang_announce:'Language: English'
+}
+};
+
+function setLang(lang){
+  currentLang=lang;
+  document.documentElement.lang=lang==='en'?'en':'pt-BR';
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key=el.getAttribute('data-i18n');
+    if(i18n[lang][key]!==undefined) el.innerHTML=i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    var key=el.getAttribute('data-i18n-ph');
+    if(i18n[lang][key]!==undefined) el.placeholder=i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+    var key=el.getAttribute('data-i18n-aria');
+    if(i18n[lang][key]!==undefined) el.setAttribute('aria-label',i18n[lang][key]);
+  });
+  document.getElementById('main-nav').setAttribute('aria-label',lang==='en'?'Main navigation':'Navegação principal');
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelector('.lang-btn[onclick="setLang(\''+lang+'\')"]').classList.add('active');
+  var ann=document.getElementById('lang-announce');
+  if(ann){ann.textContent='';setTimeout(function(){ann.textContent=i18n[lang].lang_announce;},50);}
+}
+
+// Modal + focus trap (WCAG 2.1 / ABNT)
+var _modalTrigger=null;
+function openModal(){
+  _modalTrigger=document.activeElement;
+  document.getElementById('modalDiag').classList.add('active');
+  setTimeout(function(){var f=document.getElementById('d-nome');if(f)f.focus();},50);
+}
+function closeModal(){
+  document.getElementById('modalDiag').classList.remove('active');
+  if(_modalTrigger)_modalTrigger.focus();
+}
+document.getElementById('modalDiag').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('modalDiag').addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeModal();return;}
+  if(e.key!=='Tab')return;
+  var focusable=this.querySelectorAll('button,input,select,textarea,[tabindex]:not([tabindex="-1"])');
+  var first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
+  else{if(document.activeElement===last){e.preventDefault();first.focus();}}
+});
+
+// Form → WhatsApp
+function submitToWhatsApp(e){
+  e.preventDefault();
+  var nome=document.getElementById('d-nome').value;
+  var empresa=document.getElementById('d-empresa').value;
+  var telefone=document.getElementById('d-telefone').value;
+  var email=document.getElementById('d-email').value||'N/A';
+  var desafio=document.getElementById('d-desafio').value||'N/A';
+  var intro=i18n[currentLang].wa_msg;
+  var msg=intro+'\n\n'
+    +'*'+i18n[currentLang].ml_nome.replace(' *','')+':* '+nome+'\n'
+    +'*'+i18n[currentLang].ml_empresa.replace(' *','')+':* '+empresa+'\n'
+    +'*'+i18n[currentLang].ml_tel.replace(' *','')+':* '+telefone+'\n'
+    +'*Email:* '+email+'\n'
+    +'*'+i18n[currentLang].ml_desafio.replace('?','')+':* '+desafio;
+  window.open('https://wa.me/5581995765272?text='+encodeURIComponent(msg),'_blank');
+  closeModal();
+}
+
+// Nav mobile + aria-expanded
+function toggleNav(){
+  var links=document.getElementById('navLinks');
+  var btn=document.getElementById('navToggle');
+  var open=links.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open?'true':'false');
+}
+document.querySelectorAll('.nav-links a').forEach(function(a){
+  a.addEventListener('click',function(){
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('navToggle').setAttribute('aria-expanded','false');
+  });
+});
+
+// Fade-up on scroll
+var observer=new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target);}});
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.fade-up').forEach(function(el){observer.observe(el);});
+
+// Phone mask
+document.getElementById('d-telefone').addEventListener('input',function(e){
+  var v=e.target.value.replace(/\D/g,'');
+  if(v.length>11)v=v.slice(0,11);
+  if(v.length>6)v='('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+  else if(v.length>2)v='('+v.slice(0,2)+') '+v.slice(2);
+  else if(v.length>0)v='('+v;
+  e.target.value=v;
+});
+</script>
+
+</body>
+</html>
